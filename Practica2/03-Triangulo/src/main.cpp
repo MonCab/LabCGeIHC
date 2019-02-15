@@ -11,8 +11,10 @@
 // program include
 #include "Headers/TimeManager.h"
 
+//GLSL OpenGL shading language
+
 // Shaders code
-const GLchar* vertexShaderSource = "#version 330 core\n"
+const GLchar* vertexShaderSource = "#version 330 core\n" //Version 3.3
 "layout (location = 0) in vec3 position;\n"
 "void main()\n"
 "{\n"
@@ -22,7 +24,7 @@ const GLchar* fragmentShaderSource = "#version 330 core\n"
 "out vec4 color;\n"
 "void main()\n"
 "{\n"
-"color = vec4(0.3f, 0.6f, 0.9f, 1.0f);\n"
+"color = vec4(1.0f, 0.0f, 1.0f, 1.0f);\n"
 "}\n\0";
 
 GLuint VBO, VAO;
@@ -100,7 +102,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 	// Build and compile our shader program
 	// Vertex shader
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	vertexShader = glCreateShader(GL_VERTEX_SHADER); //id
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
 	// Check for compile time errors
@@ -136,8 +138,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 			<< std::endl;
 	}
 
-	// Vertex data
-	GLfloat vertices[] = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f };
+	// Vertex data    Entrada de 3 por 3
+	GLfloat vertices[] = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f};
 
 	// Create Buffers and attributes vertex.
 	glGenVertexArrays(1, &VAO);
@@ -237,7 +239,7 @@ void applicationLoop() {
 		// Draw our first triangle
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
