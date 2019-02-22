@@ -61,6 +61,8 @@ void init(int width, int height, std::string strTitle, bool bFullScreen);
 void destroyWindow();
 void destroy();
 bool processInput(bool continueApplication = true);
+void creaRect();
+void creaEstrella();
 
 // Implementacion de todas las funciones.
 void init(int width, int height, std::string strTitle, bool bFullScreen) {
@@ -150,6 +152,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 			<< std::endl;
 	}
 
+	/*
 	// This is for the render with index element
 	Vertex vertices[] =
 	{
@@ -195,7 +198,135 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);*/
+	//creaRect();
+	creaEstrella();
+}
+
+void creaEstrella() {
+	Vertex vertices[] = {
+		//centro
+		{ { 0.0f,  0.0f, 0.0f } ,{ 0.0f, 0.0f, 1.0f } }, //p0
+		//Parte de arriba
+	    { { -0.1f, 0.5f, 0.0f } ,{ 0.5f, 1.0f, 0.0f } }, //p1
+		{ { 0.1f, 0.5f, 0.0f } ,{ 0.5f, 1.0f, 0.0f } }, //p2
+		{ { 0.0f, 0.5f, 0.0f } ,{ 0.0f, 1.0f, 1.0f } }, //p3
+		{ { 0.0f, 0.6f, 0.0f } ,{ 0.0f, 1.0f, 0.0f } }, //p4
+		//Parte de abajo
+		{ { -0.1f, -0.5f, 0.0f } ,{ 0.5f, 1.0f, 0.0f } }, //p5
+		{ { 0.1f, -0.5f, 0.0f } ,{ 0.5f, 1.0f, 0.0f } }, //p6
+		{ { 0.0f, -0.5f, 0.0f } ,{ 0.0f, 1.0f, 1.0f } }, //p7
+		{ { 0.0f, -0.6f, 0.0f } ,{ 0.0f, 1.0f, 0.0f } }, //p8
+		//Izquierda
+		{ { -0.5f, -0.1f, 0.0f } ,{ 0.5f, 1.0f, 0.0f } }, //p9
+		{ { -0.5f, 0.1f, 0.0f } ,{ 0.5f, 1.0f, 0.0f } }, //p10
+		{ { -0.5f, 0.0f, 0.0f } ,{ 0.0f, 1.0f, 1.0f } }, //p11
+		{ { -0.6f, 0.0f, 0.0f } ,{ 0.0f, 1.0f, 0.0f } }, //p12
+		//Derecha
+		{ {0.5f, -0.1f, 0.0f } ,{ 0.5f, 1.0f, 0.0f } }, //p13
+		{ { 0.5f, 0.1f, 0.0f } ,{ 0.5f, 1.0f, 0.0f } }, //p14
+		{ { 0.5f, 0.0f, 0.0f } ,{ 0.0f, 1.0f, 1.0f } }, //p15
+		{ { 0.6f, 0.0f, 0.0f } ,{ 0.0f, 1.0f, 0.0f } }, //p16
+	};
+
+	//Indices para formar los triangulos
+	GLuint indices[] = {
+		0, 3, 1,
+		0, 2, 3,
+		3, 4, 1,
+		3, 2, 4,
+		0, 5, 7,
+		0, 7, 6,
+		5, 8, 7,
+		7, 8, 6,
+		0, 10, 11,
+		0, 11, 9, 
+		10, 12, 11,
+		11, 12, 9,
+		0, 13, 15,
+		0, 15, 14,
+		13, 16, 15,
+		15, 16, 14
+	};
+
+	//Tamaño de vertices
+	const size_t VertexSize = sizeof(vertices);
+	//Tamaño de todo el vertice
+	const size_t StrideSize = sizeof(vertices[0]);
+	//Tamaño del elemento XYZ del primer elemento
+	const size_t OffsetPos = sizeof(vertices[0].XYZ);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	glGenBuffers(1, &VBO);
+	//Enlace de datos que indica que el buffer se va a ocupar como un arreglo de atributos
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, VertexSize, vertices, GL_STATIC_DRAW);
+	//Configura la estructura de datos
+	//Recibe el indice al primer atributo que pasamos, el tamaño, el tipo de dato, si queremos que se normalice el dato, desplazamiento, proximo valor
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, StrideSize, 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, StrideSize, (GLvoid*)OffsetPos);
+
+	//Activandolas
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
+	//Nuevo tipo de buffer
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//Transferencia de memoria
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	//Para volver a la configuración inicial
+	glBindVertexArray(0);
+}
+
+void creaRect() {
+	Vertex vertices[] = {
+		{ { -0.5f, -0.5f, 0.0f } ,{ 1.0f, 0.0f, 0.0f } },
+		{ { 0.5f , -0.5f, 0.0f } ,{ 0.0f, 1.0f, 0.0f } },
+		{ { 0.5f , 0.5f , 0.0f } ,{ 0.0f, 0.0f, 1.0f } },
+		{ { -0.5f , 0.5f , 0.0f } ,{ 1.0f, 0.0f, 1.0f } },
+	};
+
+	//Indices para formar los triangulos
+	GLuint indices[] = {
+		0, 1, 2,
+		0, 2, 3
+	};
+
+	//Tamaño de vertices
+	const size_t VertexSize = sizeof(vertices);
+	//Tamaño de todo el vertice
+	const size_t StrideSize = sizeof(vertices[0]);
+	//Tamaño del elemento XYZ del primer elemento
+	const size_t OffsetPos = sizeof(vertices[0].XYZ);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	glGenBuffers(1, &VBO);
+	//Enlace de datos que indica que el buffer se va a ocupar como un arreglo de atributos
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, VertexSize, vertices, GL_STATIC_DRAW);
+	//Configura la estructura de datos
+	//Recibe el indice al primer atributo que pasamos, el tamaño, el tipo de dato, si queremos que se normalice el dato, desplazamiento, proximo valor
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, StrideSize, 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, StrideSize, (GLvoid*)OffsetPos);
+
+	//Activandolas
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
+	//Nuevo tipo de buffer
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//Transferencia de memoria
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	//Para volver a la configuración inicial
+	glBindVertexArray(0);
 }
 
 void destroyWindow() {
@@ -286,7 +417,11 @@ void applicationLoop() {
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
 		// This is for the render with index element
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//Esta es para dibujar con indices
+		//Params: Primitiva, no. indices, tipo de dato, apuntador al inicio de los datos 
+		glDrawElements(GL_TRIANGLES, 48, GL_UNSIGNED_INT, 0);
+		//Esto es para dibujar sin indices
+		//glDrawArrays(GL_TRIANGLES, 0, 4);
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
