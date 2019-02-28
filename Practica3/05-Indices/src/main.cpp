@@ -264,7 +264,8 @@ void creaEstrella() {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, VertexSize, vertices, GL_STATIC_DRAW);
 	//Configura la estructura de datos
-	//Recibe el indice al primer atributo que pasamos, el tamaño, el tipo de dato, si queremos que se normalice el dato, desplazamiento, proximo valor
+	//Recibe el indice al primer atributo que pasamos, el tamaño, el tipo de dato, si queremos 
+	//	que se normalice el dato, desplazamiento, proximo valor
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, StrideSize, 0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, StrideSize, (GLvoid*)OffsetPos);
 
@@ -311,7 +312,8 @@ void creaRect() {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, VertexSize, vertices, GL_STATIC_DRAW);
 	//Configura la estructura de datos
-	//Recibe el indice al primer atributo que pasamos, el tamaño, el tipo de dato, si queremos que se normalice el dato, desplazamiento, proximo valor
+	//Recibe el indice al primer atributo que pasamos, el tamaño, el tipo de dato, si queremos 
+	//	que se normalice el dato, desplazamiento, proximo valor
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, StrideSize, 0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, StrideSize, (GLvoid*)OffsetPos);
 

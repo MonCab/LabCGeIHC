@@ -48,6 +48,11 @@ void destroyWindow();
 void destroy();
 bool processInput(bool continueApplication = true);
 
+//Variables necesarias para el ejercicio
+int proyeccion;
+double planoCercano = 0.01;
+float grados = 45.0f;
+
 // Implementacion de todas las funciones.
 void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
@@ -98,6 +103,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//Define la zona de dibujo que deseamos utilizar
 	//Params: inicial en x, inicial en y, ancho, y alto de la zona de dibujo
 	glViewport(0, 0, screenWidth, screenHeight);
+	//glViewport(0, 0, (screenWidth/2), (screenHeight/2));
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	glEnable(GL_DEPTH_TEST);
@@ -191,6 +197,27 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 		case GLFW_KEY_ESCAPE:
 			exitApp = true;
 			break;
+		case GLFW_KEY_O:
+			proyeccion = 1;
+			break;
+		case GLFW_KEY_F:
+			proyeccion = 2;
+			break;
+		case GLFW_KEY_P:
+			proyeccion = 0;
+			break;
+		case GLFW_KEY_UP:
+			planoCercano = planoCercano + 0.002;
+			break;
+		case GLFW_KEY_DOWN:
+			planoCercano = planoCercano - 0.002;
+			break;
+		case GLFW_KEY_RIGHT:
+			grados = grados + 1;
+			break;
+		case GLFW_KEY_LEFT:
+			grados = grados - 1;
+			break;
 		}
 	}
 }
@@ -242,7 +269,7 @@ void applicationLoop() {
 
 	while (psi) {
 		psi = processInput(true);
-		
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -255,24 +282,37 @@ void applicationLoop() {
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -7.0f));
 		//glm::mat4 projection = glm::perspective(glm::radians(45.0f), 
 			//(float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
-		//glm::mat 4 crea una matriz de 4x4
 
-		//glm::ortho crea una matriz de proyección ortogonal 
-		//Params: plano izq, plano der, plano abajo, plano arriba, plano cercano, plano lejano
-		//glm::mat4 projection = glm::ortho(-4.0, 4.0, -4.0, 4.0, 0.01, 100.0);
+		//glm::mat 4 crea una matriz de 4x4
+		glm::mat4 projection;
+
 		
-		//glm::frustum crea una matriz de proyección en perspectiva
-		//Params: plano izq, plano der, plano abajo, plano arriba, plano cercano, plano lejano
-		//glm::mat4 projection = glm::frustum(-0.005, 0.005, -0.005, 0.005, 0.01, 100.0);
-		
-		//glm:perspective crea una proyección en perspectiva que cambia respecto a las
-		//	dimensiones de la ventana
-		//Params: campo de vision en radianes, relacion entre ancho y alto de la ventana, plano cercano,
-		//	plano lejano
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(screenWidth/screenHeight), 0.01f, 100.0f);
+		if (proyeccion == 1) 
+			//glm::ortho crea una matriz de proyección ortogonal 
+			//Params: plano izq, plano der, plano abajo, plano arriba, plano cercano, plano lejano
+			projection = glm::ortho(-4.0, 4.0, -4.0, 4.0, 0.01, 100.0);
+		else {
+			if (proyeccion == 2)
+				//glm::frustum crea una matriz de proyección en perspectiva
+				//Params: plano izq, plano der, plano abajo, plano arriba, plano cercano, plano lejano
+				//projection = glm::frustum(-0.005, 0.005, -0.005, 0.005, 0.01, 100.0);
+				projection = glm::frustum(-0.005, 0.005, -0.005, 0.005, planoCercano, 100.0);
+			else {
+				//glm:perspective crea una proyección en perspectiva que cambia respecto a las
+				//	dimensiones de la ventana
+				//Params: campo de vision en radianes, relacion entre ancho y alto de la ventana, 
+				//	plano cercano, plano lejano
+				//projection = glm::perspective(glm::radians(45.0f), (float)(screenWidth / screenHeight), 
+				//	0.01f, 100.0f);
+				if(grados >= 0.0f || grados <= 360.0f)
+					projection = glm::perspective(glm::radians(grados), (float)(screenWidth / screenHeight), 
+						0.01f, 100.0f);
+			}
+		}
+
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
+		
 		glBindVertexArray(VAO);
 		for (GLuint i = 0; i < 10; i++) {
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
