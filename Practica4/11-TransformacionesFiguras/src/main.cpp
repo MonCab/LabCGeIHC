@@ -20,6 +20,12 @@
 
 GLuint VBO, VAO, EBO;
 
+//Variables para mover la cámara
+float horizontal = -5.0f;
+float vertical = 3.0f;
+float grados = 100.0f;
+float moverZ = -8.0f;
+
 struct Vertex {
 	glm::vec3 m_Pos;
 	glm::vec3 m_Color;
@@ -28,29 +34,51 @@ struct Vertex {
 // This is for the render with index element
 Vertex vertices[] =
 {
+	//Frente
 	{ glm::vec3(-0.5f, -0.5f, 0.5f) , glm::vec3(1.0f, 0.0f, 0.0f) },
-	{ glm::vec3(0.5f , -0.5f, 0.5f) , glm::vec3(0.0f, 1.0f, 0.0f) },
-	{ glm::vec3(0.5f ,  0.5f, 0.5f) , glm::vec3(0.0f, 0.0f, 1.0f) },
-	{ glm::vec3(-0.5f,  0.5f, 0.5f) , glm::vec3(1.0f, 0.0f, 1.0f) },
-	{ glm::vec3(0.5f , -0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f) },
-	{ glm::vec3(0.5f ,  0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 1.0f) },
-	{ glm::vec3(-0.5f , 0.5f, -0.5f) ,glm::vec3(0.0f, 0.0f, 1.0f) },
+	{ glm::vec3(0.5f , -0.5f, 0.5f) , glm::vec3(1.0f, 0.0f, 0.0f) },
+	{ glm::vec3(0.5f ,  0.5f, 0.5f) , glm::vec3(1.0f, 0.0f, 0.0f) },
+	{ glm::vec3(-0.5f,  0.5f, 0.5f) , glm::vec3(1.0f, 0.0f, 0.0f) },
+	//Posterior
+	{ glm::vec3(0.5f , -0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f) },
+	{ glm::vec3(0.5f ,  0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f) },
+	{ glm::vec3(-0.5f , 0.5f, -0.5f) ,glm::vec3(0.0f, 1.0f, 0.0f) },
 	{ glm::vec3(-0.5f , -0.5f, -0.5f),glm::vec3(0.0f, 1.0f, 0.0f) },
+	//Superior
+	{ glm::vec3(0.5f , 0.5f, 0.5f) , glm::vec3(0.0f, 0.0f, 1.0f) },
+	{ glm::vec3(-0.5f, 0.5f, 0.5f) , glm::vec3(0.0f, 0.0f, 1.0f) },
+	{ glm::vec3(0.5f , 0.5f, -0.5f) ,glm::vec3(0.0f, 0.0f, 1.0f) },
+	{ glm::vec3(-0.5f , 0.5f, -0.5f),glm::vec3(0.0f, 0.0f, 1.0f) },
+	//Inferior
+	{ glm::vec3(-0.5f, -0.5f, 0.5f) , glm::vec3(1.0f, 0.0f, 1.0f) },
+	{ glm::vec3(0.5f , -0.5f, 0.5f) , glm::vec3(1.0f, 0.0f, 1.0f) },
+	{ glm::vec3(0.5f , -0.5f,-0.5f) , glm::vec3(1.0f, 0.0f, 1.0f) },
+	{ glm::vec3(-0.5f, -0.5f,-0.5f) , glm::vec3(1.0f, 0.0f, 1.0f) },
+	//Izquierda
+	{ glm::vec3(-0.5f, -0.5f, 0.5f) , glm::vec3(1.0f, 1.0f, 0.0f) },
+	{ glm::vec3(-0.5f,  0.5f, 0.5f) , glm::vec3(1.0f, 1.0f, 0.0f) },
+	{ glm::vec3(-0.5f , 0.5f, -0.5f), glm::vec3(1.0f, 1.0f, 0.0f) },
+	{ glm::vec3(-0.5f , -0.5f, -0.5f),glm::vec3(1.0f, 1.0f, 0.0f) },
+	//Derecha
+	{ glm::vec3(0.5f , -0.5f, 0.5f) , glm::vec3(0.0f, 1.0f, 1.0f) },
+	{ glm::vec3(0.5f ,  0.5f, 0.5f) , glm::vec3(0.0f, 1.0f, 1.0f) },
+	{ glm::vec3(0.5f , -0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 1.0f) },
+	{ glm::vec3(0.5f , 0.5f, -0.5f) ,glm::vec3(0.0f, 1.0f, 1.0f) }
 };
 
 GLuint indices[] = {  // Note that we start from 0!
-	0, 1, 2,
-	0, 2, 3,
-	1, 4, 5,
-	1, 5, 2,
-	0, 3, 6,
-	0, 6, 7,
-	0, 4, 1,
-	0, 7, 4,
-	3, 2, 5,
-	3, 5, 6,
-	4, 5, 6,
-	4, 6, 7
+	0, 1, 2,//Frente
+	2, 3, 0,
+	4, 7, 6,//Posterior
+	6, 5, 4,
+	8, 9, 11,//Superior
+	11, 10, 8,
+	12, 15, 14,//Inferior
+	14, 13, 12,
+	16, 17, 18,//Izquierda
+	18, 19, 16,
+	20, 22, 23,//Derecha
+	23, 21, 20
 };
 
 Shader shader;
@@ -194,6 +222,30 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 		case GLFW_KEY_ESCAPE:
 			exitApp = true;
 			break;
+		case GLFW_KEY_UP:
+			vertical = vertical + 0.1f;
+			break;
+		case GLFW_KEY_DOWN:
+			vertical = vertical - 0.1f;
+			break;
+		case GLFW_KEY_RIGHT:
+			horizontal = horizontal + 0.1f;
+			break;
+		case GLFW_KEY_LEFT:
+			horizontal = horizontal - 0.1f;
+			break;
+		case GLFW_KEY_P:
+			grados = grados + 1.0f;
+			break;
+		case GLFW_KEY_N:
+			grados = grados - 1.0f;
+			break;
+		case GLFW_KEY_INSERT:
+			moverZ = moverZ - 1.0f;
+			break;
+		case GLFW_KEY_PRINT_SCREEN:
+			moverZ = moverZ + 1.0f;
+			break;
 		}
 	}
 }
@@ -245,18 +297,185 @@ void applicationLoop() {
 		GLuint viewLoc = shader.getUniformLocation("view");
 		GLuint projLoc = shader.getUniformLocation("projection");
 
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f),
+		glm::mat4 projection = glm::perspective(glm::radians(grados),
 			(float)screenWidth / screenWidth, 0.01f, 100.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -8.0f));
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(horizontal, vertical, moverZ));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-		glm::mat4 model = glm::mat4(1.0f);
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		//glm::mat4 model = glm::mat4(1.0f);
+		//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 		glBindVertexArray(VAO);
-		// This is for the render with index element
+
+		//Cabeza
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 3.0f, -4.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		GLuint locModel = shader.getUniformLocation("model");
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+			// This is for the render with index element
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Cuello
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 1.85f, -4.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 0.3f, 1.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Cuerpo
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, -0.3f, -4.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 4.0f, 2.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Hombro derecho
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.25f, 1.45f, -4.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 0.5f, 1.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Hombro izquierdo
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-4.25f, 1.45f, -4.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 0.5f, 1.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Brazo izquierdo
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-4.5f, -0.8f, -4.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 4.0f, 1.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Brazo derecho
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, -0.8f, -4.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 4.0f, 1.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Cadera
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, -2.8f, -4.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 1.0f, 2.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Pierna izquierdo
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-2.9f, -5.9f, -4.0f));
+		model = glm::scale(model, glm::vec3(1.2f, 5.2f, 2.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Pierna izquierdo
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-1.1f, -5.9f, -4.0f));
+		model = glm::scale(model, glm::vec3(1.2f, 5.2f, 2.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Pie derecho
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-0.6f, -8.75f, -4.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.2f, 0.5f, 2.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Pie izquierdo
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-3.4f, -8.75f, -4.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.2f, 0.5f, 2.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Mango de la espada
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.75f, -3.05f, -4.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 0.5f, 1.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Parte de en medio
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(1.75f, -3.05f, -4.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.5f, 2.5f, 1.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Hoja de la espada
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(4.5f, -3.05f, -4.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 0.5f, 1.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+		
+		//Perrito
+		//Cabeza
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(14.0f, -4.0f, -10.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Oreja frente
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(14.75f, -2.5f, -9.25f));
+		model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Oreja atrás
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(14.75f, -2.5f, -10.75f));
+		model = glm::scale(model, glm::vec3(0.5f, 1.0f, 0.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Trompa
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(12.25f, -4.25f, -10.0f));;
+		model = glm::scale(model, glm::vec3(1.5f, 0.5f, 2.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Cuerpo
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(16.0f, -6.0f, -10.0f));;
+		model = glm::scale(model, glm::vec3(6.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Cola
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(20.5f, -5.25f, -10.0f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 0.5f, 1.5f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Pata delantera frente 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(13.75f, -8.0f, -9.4f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 2.0f, 0.8f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Pata delantera atrás 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(13.75f, -8.0f, -10.6f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 2.0f, 0.8f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Pata trasera frente 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(18.25f, -8.0f, -9.4f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 2.0f, 0.8f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
+		//Pata delantera atrás
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(18.25f, -8.0f, -10.6f));
+		model = glm::rotate(model, 3.1416f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 2.0f, 0.8f));
+		glUniformMatrix4fv(locModel, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (GLuint *)0);
+
 		glBindVertexArray(0);
 
 		shader.turnOff();
