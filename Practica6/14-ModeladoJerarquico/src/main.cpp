@@ -44,6 +44,7 @@ int lastMousePosY, offsety;
 
 float rot1, rot2, rot3 = 0.0f;
 float rot4, rot5, rot6 = 0.0f;
+float rot7, rot8, rot9 = 0.0f;
 float suma = 0.01f;
 
 double deltaTime;
@@ -215,6 +216,12 @@ bool processInput(bool continueApplication) {
 		rot5 += suma;
 	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
 		rot6 += suma;
+	if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS)
+		rot7 += suma;
+	if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS)
+		rot8 += suma;
+	if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
+		rot9 += suma;
 	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
 		suma *= -1;
 
@@ -261,12 +268,44 @@ void applicationLoop() {
 
 		glm::mat4 matrix7 = glm::translate(matrixs6, glm::vec3(0.25f, 0.0f, 0.0f));
 
-		glm::mat4 matrixs7 = glm::translate(matrix7, glm::vec3(0.3f, 0.0f, 0.0f));
-		
+		glm::mat4 matrixs7 = glm::translate(matrix7, glm::vec3(0.25f, 0.0f, 0.0f));
+
 		matrixs7 = glm::rotate(matrixs7, rot4, glm::vec3(0.0f, 0.0f, 1.0f));
 		matrixs7 = glm::rotate(matrixs7, rot5, glm::vec3(0.0f, 1.0f, 0.0f));
 		matrixs7 = glm::rotate(matrixs7, rot6, glm::vec3(1.0f, 0.0f, 0.0f));
+
+		glm::mat4 matrix3 = glm::translate(matrixs7, glm::vec3(0.25f, 0.0f, 0.0f));
 		
+		glm::mat4 matrixs8 = glm::translate(matrix3, glm::vec3(0.25f, 0.0f, 0.0f));
+
+		matrixs8 = glm::rotate(matrixs8, rot7, glm::vec3(0.0f, 0.0f, 1.0f));
+		matrixs8 = glm::rotate(matrixs8, rot8, glm::vec3(0.0f, 1.0f, 0.0f));
+		matrixs8 = glm::rotate(matrixs8, rot9, glm::vec3(1.0f, 0.0f, 0.0f));
+
+		glm::mat4 matrix4 = glm::translate(matrixs8, glm::vec3(0.2f, 0.0f, 0.0f));
+
+		matrix4 = glm::rotate(matrix4, 1.5708f, glm::vec3(0.0f, 0.0f, 1.0f));
+		matrix4 = glm::scale(matrix4, glm::vec3(0.3, 0.3, 0.3f));
+		box.setProjectionMatrix(projection);
+		box.setViewMatrix(view);
+		//box.enableWireMode();
+		box.setColor(glm::vec3(0.8, 0.3, 0.0));
+		box.render(matrix4);
+
+		matrixs8 = glm::scale(matrixs8, glm::vec3(0.1f, 0.1f, 0.1f));
+		sphere.setProjectionMatrix(projection);
+		sphere.setViewMatrix(view);
+		sphere.enableWireMode();
+		sphere.render(matrixs8);
+
+		matrix3 = glm::rotate(matrix3, 1.5708f, glm::vec3(0.0f, 0.0f, 1.0f));
+		matrix3 = glm::scale(matrix3, glm::vec3(0.15, 0.5, 0.15f));
+		cylinder.setProjectionMatrix(projection);
+		cylinder.setViewMatrix(view);
+		cylinder.enableWireMode();
+		cylinder.setColor(glm::vec3(0.8, 0.3, 1.0));
+		cylinder.render(matrix3);
+
 		matrixs7 = glm::scale(matrixs7, glm::vec3(0.1f, 0.1f, 0.1f));
 		sphere.setProjectionMatrix(projection);
 		sphere.setViewMatrix(view);
