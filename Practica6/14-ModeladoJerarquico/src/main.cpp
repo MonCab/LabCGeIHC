@@ -282,7 +282,7 @@ void applicationLoop() {
 		matrixs8 = glm::rotate(matrixs8, rot8, glm::vec3(0.0f, 1.0f, 0.0f));
 		matrixs8 = glm::rotate(matrixs8, rot9, glm::vec3(1.0f, 0.0f, 0.0f));
 
-		glm::mat4 matrix4 = glm::translate(matrixs8, glm::vec3(0.2f, 0.0f, 0.0f));
+		glm::mat4 matrix4 = glm::translate(matrixs8, glm::vec3(0.1f, 0.0f, 0.0f));
 
 		matrix4 = glm::rotate(matrix4, 1.5708f, glm::vec3(0.0f, 0.0f, 1.0f));
 		matrix4 = glm::scale(matrix4, glm::vec3(0.3, 0.3, 0.3f));
