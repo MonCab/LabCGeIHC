@@ -38,6 +38,8 @@ void main(){
 
 	vec3 result = ambient + diff * light.diffuse * material.diffuse + spec * light.specular * material.specular;
 
+	//aquí se rellena el alfa con valor de 1.
 	color = vec4(result, 1.0);
-
+		if(color.a <= 0.1)
+		discard;
 }

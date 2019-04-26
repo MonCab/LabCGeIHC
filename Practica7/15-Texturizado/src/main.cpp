@@ -177,7 +177,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 
 	//Segunda textura
-	Texture texture2("../../Textures/goku.png");
+	Texture texture2("../../Textures/h.jpg");
 	FIBITMAP* bitmap2 = texture2.loadImage(false);
 	unsigned char * data2 = texture2.convertToData(bitmap2, imageWidth, imageHeight);
 	glGenTextures(1, &textureID2); //Se genera la textura, el número de texturas y se le pasa la referencia para que la pueda modificar
