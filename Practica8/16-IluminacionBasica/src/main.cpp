@@ -264,9 +264,9 @@ void applicationLoop() {
 		lightModelmatrix = glm::translate(lightModelmatrix, glm::vec3(0.0f, 0.0f, -ratio));
 
 		iluminacionShader.turnOn();
-		glUniform3f(iluminacionShader.getUniformLocation("light.ambient"), 0.1, 0.1, 0.1); //0.1, 0.1, 0.1
-		glUniform3f(iluminacionShader.getUniformLocation("light.diffuse"), 0.7, 0.2, 0.1); //0.7, 0.2, 0.1
-		glUniform3f(iluminacionShader.getUniformLocation("light.specular"), 0.3, 0.6, 0.8); //0.3, 0.6, 0.8
+		glUniform3f(iluminacionShader.getUniformLocation("light.ambient"), 1.0, 1.0, 1.0); //0.1, 0.1, 0.1
+		glUniform3f(iluminacionShader.getUniformLocation("light.diffuse"), 1.0, 1.0, 1.0); //0.7, 0.2, 0.1
+		glUniform3f(iluminacionShader.getUniformLocation("light.specular"), 1.0, 1.0, 1.0); //0.3, 0.6, 0.8
 		glUniform3fv(iluminacionShader.getUniformLocation("light.position"), 1, 
 			glm::value_ptr(glm::vec3(lightModelmatrix * glm::vec4(0.0, 0.0, 0.0, 1.0))));
 		glUniform3fv(iluminacionShader.getUniformLocation("viewPos"), 1,
