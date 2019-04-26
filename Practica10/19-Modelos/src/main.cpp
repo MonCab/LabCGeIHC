@@ -44,6 +44,7 @@ Shader shaderMateriales;
 Shader shaderDirectionLight;
 Shader shaderPointLight;
 Shader shaderSpotLight;
+//Shader que tiene multiples luces 
 Shader shaderLighting;
 
 Model modelRock;
@@ -51,6 +52,7 @@ Model modelRail;
 Model modelAirCraft;
 Model arturito;
 Model modelTrain;
+Model modelEye;
 
 GLuint textureID1, textureID2, textureID3, textureCespedID, textureWaterID, textureCubeTexture;
 GLuint cubeTextureID;
@@ -158,12 +160,15 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	sphere.init();
 	cylinder.init();
 	box.init();
+	//Se escala las coordenadas de textura
 	box.scaleUVS(glm::vec2(100.0, 100.0));
 	boxWater.init();
 	boxWater.scaleUVS(glm::vec2(1.0, 1.0));
+	//Se cargan los modelos
 	modelRock.loadModel("../../models/rock/rock.obj");
 	modelRail.loadModel("../../models/railroad/railroad_track.obj");
 	modelAirCraft.loadModel("../../models/Aircraft_obj/E 45 Aircraft_obj.obj");
+	modelEye.loadModel("../../models/eye/eyeball.obj");
 
 	camera->setPosition(glm::vec3(0.0f, 0.0f, 0.4f));
 	
@@ -432,8 +437,9 @@ void applicationLoop() {
 		shaderMateriales.turnOff();
 
 		shaderLighting.turnOn();
-		glUniform3fv(shaderLighting.getUniformLocation("viewPos"), 1, glm::value_ptr(camera->getPosition()));
+		glUniform3fv(shaderLighting.getUniformLocation("viewPos"), 1, glm::value_ptr(camera->getPosition())); //Posición del observador
 		//Directional light
+		//Se envian los valores de las componentes ambientales, difusas y especulares
 		glUniform3f(shaderLighting.getUniformLocation("directionalLight.light.ambient"), 0.025, 0.025, 0.025);
 		glUniform3f(shaderLighting.getUniformLocation("directionalLight.light.diffuse"), 0.1, 0.1, 0.1);
 		glUniform3f(shaderLighting.getUniformLocation("directionalLight.light.specular"), 0.15, 0.15, 0.15);
@@ -441,7 +447,7 @@ void applicationLoop() {
 		//Numero de luces spot y point
 		int locCount = shaderLighting.getUniformLocation("pointLightCount");
 		glUniform1i(shaderLighting.getUniformLocation("pointLightCount"), 1);
-		glUniform1i(shaderLighting.getUniformLocation("spotLightCount"), 1);
+		glUniform1i(shaderLighting.getUniformLocation("spotLightCount"), 2);
 		// Point light
 		glUniform3fv(shaderLighting.getUniformLocation("pointLights[0].position"), 1, glm::value_ptr(glm::vec3(lightModelmatrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f))));
 		glUniform1f(shaderLighting.getUniformLocation("pointLights[0].constant"), 1.0f);
@@ -461,8 +467,31 @@ void applicationLoop() {
 		glUniform3f(shaderLighting.getUniformLocation("spotLights[0].light.ambient"), 0.025, 0.025, 0.025);
 		glUniform3f(shaderLighting.getUniformLocation("spotLights[0].light.diffuse"), 0.7, 0.2, 0.6);
 		glUniform3f(shaderLighting.getUniformLocation("spotLights[0].light.specular"), 0.1, 0.7, 0.8);
-		shaderLighting.turnOff();
+		// Spot light 2
+		glUniform3fv(shaderLighting.getUniformLocation("spotLights[1].position"), 1, glm::value_ptr(glm::vec3(13.0, 6.0, -18.0)));
+		glUniform3fv(shaderLighting.getUniformLocation("spotLights[1].direction"), 1, glm::value_ptr(glm::vec3(0.0, -1.0, -1.0)));
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[1].cutOff"), glm::cos(glm::radians(12.5f)));
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[1].outerCutOff"), glm::cos(glm::radians(15.0f)));
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[1].constant"), 1.0f);
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[1].linear"), 0.14f);
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[1].quadratics"), 0.07f);
+		glUniform3f(shaderLighting.getUniformLocation("spotLights[1].light.ambient"), 0.025, 0.025, 0.025);
+		glUniform3f(shaderLighting.getUniformLocation("spotLights[1].light.diffuse"), 0.7, 0.2, 0.6);
+		glUniform3f(shaderLighting.getUniformLocation("spotLights[1].light.specular"), 0.1, 0.7, 0.8);
+		/*// Spot light 3
+		glUniform3fv(shaderLighting.getUniformLocation("spotLights[2].position"), 1, glm::value_ptr(camera->getPosition()));
+		glUniform3fv(shaderLighting.getUniformLocation("spotLights[2].direction"), 1, glm::value_ptr(camera->getFront()));
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[2].cutOff"), glm::cos(glm::radians(12.5f)));
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[2].outerCutOff"), glm::cos(glm::radians(15.0f)));
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[2].constant"), 1.0f);
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[2].linear"), 0.14f);
+		glUniform1f(shaderLighting.getUniformLocation("spotLights[2].quadratics"), 0.07f);
+		glUniform3f(shaderLighting.getUniformLocation("spotLights[2].light.ambient"), 0.025, 0.025, 0.025);
+		glUniform3f(shaderLighting.getUniformLocation("spotLights[2].light.diffuse"), 0.7, 0.2, 0.6);
+		glUniform3f(shaderLighting.getUniformLocation("spotLights[2].light.specular"), 0.1, 0.7, 0.8);
+		shaderLighting.turnOff();*/
 
+		//Se settea el shader con multiples luces
 		modelRock.setShader(&shaderLighting);
 		modelRock.setProjectionMatrix(projection);
 		modelRock.setViewMatrix(view);
@@ -481,10 +510,18 @@ void applicationLoop() {
 		modelAirCraft.setProjectionMatrix(projection);
 		modelAirCraft.setViewMatrix(view);
 		modelAirCraft.setScale(glm::vec3(1.0, 1.0, 1.0));
+		//Se rota el modelo, se coloca en la posición deseada y se hace el desplazamiento en el eje Z 
 		glm::mat4 matrixAirCraft = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0.0, aircraftZ));
 		matrixAirCraft = glm::translate(matrixAirCraft, glm::vec3(10.0, 2.0, 15.0));
 		matrixAirCraft = glm::rotate(matrixAirCraft, rotationAirCraft, glm::vec3(0, 1, 0));
 		modelAirCraft.render(matrixAirCraft);
+
+		modelEye.setShader(&shaderLighting);
+		modelEye.setProjectionMatrix(projection);
+		modelEye.setViewMatrix(view);
+		modelEye.setPosition(glm::vec3(15.0, 2.0, -20.0));
+		modelEye.setScale(glm::vec3(1.0, 1.0, 1.0));
+		modelEye.render();
 
 		/*arturito.setShader(&shaderLighting);
 		arturito.setProjectionMatrix(projection);
@@ -511,7 +548,8 @@ void applicationLoop() {
 		boxWater.setViewMatrix(view);
 		boxWater.setPosition(glm::vec3(3.0, 2.0, -5.0));
 		boxWater.setScale(glm::vec3(10.0, 0.001, 10.0));
-		boxWater.offsetUVS(glm::vec2(0.0001, 0.0001));
+		//Se realiza el offset de la textura (para que se mueva)
+		boxWater.offsetUVS(glm::vec2(0.001, 0.001));
 		boxWater.render();
 
 		if (angle > 2 * M_PI)
