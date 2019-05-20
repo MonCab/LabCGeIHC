@@ -35,7 +35,7 @@ struct  SpotLight{
     float quadratic;
 
 };
-//Cantidad de luces máximas
+
 const int MAX_POINT_LIGHTS = 3;
 const int MAX_SPOT_LIGHTS = 5;
 
@@ -47,11 +47,10 @@ in vec2 our_uv;
 
 uniform int pointLightCount;
 uniform int spotLightCount;
-
-//Se define una luz direccional, y los arreglos para luces puntuales y spotlight
-uniform DirectionalLight directionalLight;//Luz solar
-uniform PointLight pointLights[MAX_POINT_LIGHTS];//Arreglo de luces puntuales
-uniform SpotLight spotLights[MAX_SPOT_LIGHTS]; //Arreglo de spotlight
+//Se define una luz direccional y los arreglos de las luces puntuales y SPotlights
+uniform DirectionalLight directionalLight;
+uniform PointLight pointLights[MAX_POINT_LIGHTS];
+uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform vec3 viewPos;  
 uniform sampler2D texture1;
@@ -106,5 +105,6 @@ void main()
 	vec4 colorText = texture(texture1, our_uv);
 	if(colorText.a < 0.1)
 		discard;
-    color = vec4(calculateDirectionalLight(directionalLight.light, directionalLight.direction) + calculatePointLights() + calculateSpotLights(), 1.0);
+    color = vec4(calculateDirectionalLight(directionalLight.light, directionalLight.direction) + calculatePointLights() + calculateSpotLights(),1.0);
+	
 }

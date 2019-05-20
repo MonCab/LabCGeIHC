@@ -12,25 +12,26 @@ struct PositionalLight{
 };
 
 out vec4 color;
-
-uniform PositionalLight light;
 uniform vec3 viewPos;
+uniform PositionalLight light;
 
-void main(){
+void main(){ 
 	
+	//color = vec4(our_color, 1.0);
 	vec3 ambient = light.ambient * our_color;
 
 	vec3 normal = normalize(our_normal);
 	vec3 lightDir = normalize(light.position - fragPos);
-	float diff = max(dot(lightDir, normal), 0.0);
+	float diff = max(dot(lightDir,normal),0.0);
 	vec3 diffuse = diff * light.diffuse * our_color;
 
 	vec3 r = reflect(-lightDir, normal);
 	vec3 viewDir = normalize(viewPos - fragPos);
-	float spec = pow(max(dot(r, viewDir), 0.0), 128.0); //32
-	vec3 specular = spec * light.specular * our_color; 
+	float spec = pow(max(dot(r,viewDir),0.0),128.0);
+	vec3 specular = spec * light.specular * our_color;
 
 	vec3 result = ambient + diffuse + specular;
-
 	color = vec4(result, 1.0);
+
+
 }

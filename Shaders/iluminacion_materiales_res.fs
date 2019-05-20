@@ -39,7 +39,6 @@ void main(){
 
 	vec3 result = ambient + diff * light.diffuse * material.diffuse + spec * light.specular * material.specular;
 
-	color = vec4(result, .0);
-
+	color = vec4(result, 1.0);
 
 }

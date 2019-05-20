@@ -12,17 +12,17 @@ struct PositionalLight{
 	vec3 diffuse;
 	vec3 specular;
 };
-
 struct Material{
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
-	float shininess;
+	float shinyness;
+
 };
 
 uniform vec3 viewPos; 
 uniform PositionalLight light;
-uniform Material material;
+uniform Material material ;
 
 void main(){
 
@@ -34,12 +34,10 @@ void main(){
 	// Iluminacion specular
 	vec3 r = reflect(lightDir, our_normal);
 	vec3 viewDir = normalize(viewPos - fragPos);
-	float spec = pow( max(dot(r , viewDir), 0.0), material.shininess);
+	float spec = pow( max(dot(r , viewDir), 0.0), material.shinyness);
 
 	vec3 result = ambient + diff * light.diffuse * material.diffuse + spec * light.specular * material.specular;
 
-	//aquí se rellena el alfa con valor de 1.
 	color = vec4(result, 1.0);
-		if(color.a <= 0.1)
-		discard;
+
 }
